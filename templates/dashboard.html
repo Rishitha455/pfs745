@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .navbar a,
+        .dropdown button {
+            text-decoration: none;
+            padding: 10px 15px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .navbar a:hover,
+        .dropdown button:hover {
+            border-radius: 4px;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            min-width: 150px;
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            padding: 10px 15px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .search-container button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+
+</head>
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    {% for message in messages %}
+    <center><h3>{{message}}</h3></center>
+     {% endfor %}
+  {% endif %}
+    
+{% endwith %}
+
+<body>
+    <div class="navbar">
+        <p>
+            <a href="">Home</a><br>
+        <div class="dropdown">
+            <button>Notes</button><br>
+            <div class="dropdown-content">
+                <a href="{{url_for('viewallnotes')}}">View All Notes</a>
+                <a href="{{url_for('addnotes')}}">Add Notes</a>
+                <a href="{{url_for('getexceldata')}}">Get Excel</a>
+            </div>
+        </div>
+        </p>
+        <p>
+           
+        <div class="dropdown">
+            <button>Files</button>
+            <div class="dropdown-content">
+                <a href="{{url_for('uploadfile')}}">Upload</a>
+                <a href="{{url_for('allfiles')}}">View all Files</a>
+            </div>
+        </div>
+        </p>
+        {{session.get('user')}}
+        <p>
+             <form action="{{url_for('search')}}" method="post">
+                <div class="search-container">
+                    <input type="text" name="sname" placeholder="Search">
+                    <button>Search</button>
+                </div>
+            </form>
+        
+        <a href="{{url_for('logout')}}">Logout</a>
+        </p>
+    </div>
+</body>
+{% if sdata %}
+<table>
+    <thead>
+        <tr>
+            <th>Note ID</th>
+            <th>Title</th>
+            <th>created_at</th>
+            <th>Link</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for i in sdata %}
+        <tr>
+            <td>{{i[0]}}</td>
+            <td>{{i[1]}}</td>
+            <td>{{i[3]}}</td>
+            <td><a href="{{url_for('viewnotes',n_id=i[0])}}">View</a></td>
+            <td><a href="{{url_for('updatenotes',n_id=i[0])}}">Update</a></td>
+            <td><a href="{{url_for('deletenotes',n_id=i[0])}}">Delete</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+</html>
